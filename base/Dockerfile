@@ -17,9 +17,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
       
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
 
-RUN curl -O https://downloads.apache.org/hadoop/common/KEYS
-
-RUN gpg --import KEYS
+RUN curl -fsSL https://downloads.apache.org/hadoop/common/KEYS | gpg --import -
 
 ENV HADOOP_VERSION 3.3.6
 ENV HADOOP_URL https://downloads.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
