@@ -8,7 +8,7 @@ Version 2.0.0 introduces uses wait_for_it script for the cluster startup
 
 ## Quick Start
 
-The docker compose setup uses bind volumes. Replace line 14 in `docker-compose.yml` to bind a directory on your local file system, or remove lines 13-15 if you do not want to bind any directories.
+It is recommended to mount a local directory to the namenode to make working inside the docker container easier. You'll be able to learn about it [here](https://docs.docker.com/storage/bind-mounts/#use-a-bind-mount-with-compose).
 
 To deploy an example HDFS cluster, run:
 ```
