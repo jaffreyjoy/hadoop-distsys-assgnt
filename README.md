@@ -41,7 +41,7 @@ To exec into the namenode, run `docker exec -it namenode /bin/bash`
 
 ## Common issues
 
-- "Library initialization failed - unable to allocate file descriptor table"
+- "Library initialization failed - unable to allocate file descriptor table" (often resulting in namenode restarting)
   You can follow the instructions present [here](https://stackoverflow.com/questions/68776387/docker-library-initialization-failed-unable-to-allocate-file-descriptor-tabl)
 - Resource manager keeps restarting because the namenode is in safemode
   - Exec into the namenode and run `hdfs dfsadmin -safemode leave`
