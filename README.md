@@ -12,7 +12,7 @@ The docker compose setup uses bind volumes. Replace those lines to bind a direct
 
 To deploy an example HDFS cluster, run:
 ```
-  docker-compose up
+  docker-compose up -d
 ```
 
 Run example wordcount job:
