@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+
+# STREAM_JAR=$1
+# LOCAL_INP=$2
+# HDFS_INP=$3
+# HDFS_OUT=$4
+# FILES=$5
+
+STREAM_JAR=$1
+LOCAL_INP=$2
+HDFS_INP=$3
+HDFS_OUT=$4
+MAPPER_SCRIPT=mapper.py
+REDUCER_SCRIPT=reducer.py
+
+
+# Check if the input directory exists in HDFS
+if ! hdfs dfs -test -d "$HDFS_INP"; then
+    echo "Creating HDFS input directory: $HDFS_INP"
+    hdfs dfs -mkdir -p "$HDFS_INP"
+fi
+
+# put input dir on hdfs
+hdfs dfs -put $LOCAL_INP $HDFS_INP
+
+# run
+hadoop jar $STREAM_JAR \
+    -input $HDFS_INP \
+    -output $HDFS_OUT \
+    -numReduceTasks 3 \
+    -file $MAPPER_SCRIPT  -mapper $MAPPER_SCRIPT \
+    -file $REDUCER_SCRIPT -reducer $REDUCER_SCRIPT
