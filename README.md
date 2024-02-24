@@ -12,13 +12,20 @@ It is recommended to mount a local directory to the namenode to make working ins
 
 To deploy an example HDFS cluster, run:
 ```
-  docker-compose up -d
+  sudo docker compose up -d
 ```
 
 Run example wordcount job:
 ```
-  make wordcount
+  sudo make wordcount
 ```
+
+
+Run \<qno> job:
+```
+  sudo make -B <qno>
+```
+
 
 Or deploy in swarm:
 ```
