@@ -17,3 +17,28 @@ wordcount:
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -cat /output/*
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
+
+
+q1:
+	docker build -t hadoop-q1 ./q1
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -mkdir -p /input/
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} hadoop-q1
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -cat /output/*
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
+
+
+q2:
+	docker build -t hadoop-q2 ./q2
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} hadoop-q2
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -cat /user/root/out/combined.txt
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /user/root/in
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /user/root/out
+
+
+q3:
+	docker build -t hadoop-q3 ./q3
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} hadoop-q3
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -cat /user/root/out/combined.txt
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /user/root/in
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} pramodraob/hadoop-base:$(current_branch) hdfs dfs -rm -r /user/root/out
