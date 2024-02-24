@@ -1,0 +1,77 @@
+#!/usr/bin/bash
+
+# STREAM_JAR=$1
+# LOCAL_INP=$2
+# HDFS_INP=$3
+# HDFS_OUT=$4
+# FILES=$5
+
+STREAM_JAR=$1
+LOCAL_INP=$2
+HDFS_INP=$3
+HDFS_OUT=$4
+MAPPER_SCRIPT0=mapper0.py
+REDUCER_SCRIPT0=reducer0.py
+MAPPER_SCRIPT1=mapper1.py
+REDUCER_SCRIPT1=reducer1.py
+
+
+# Check if the input directory exists in HDFS
+if ! hdfs dfs -test -d "$HDFS_INP"; then
+    echo "Creating HDFS input directory: $HDFS_INP"
+    hdfs dfs -mkdir -p "$HDFS_INP"
+fi
+
+# Check if the output directory exists in HDFS
+if hdfs dfs -test -d "$HDFS_OUT"; then
+    echo "Deleting HDFS output directory: $HDFS_OUT"
+    hdfs dfs -rm -r -f "$HDFS_OUT"
+fi
+
+
+# put input dir on hdfs
+hdfs dfs -put ${LOCAL_INP}* $HDFS_INP
+
+
+# run
+hadoop jar $STREAM_JAR \
+    -input $HDFS_INP \
+    -output $HDFS_OUT \
+    -numReduceTasks 3 \
+    -file $MAPPER_SCRIPT0  -mapper $MAPPER_SCRIPT0 \
+    -file $REDUCER_SCRIPT0 -reducer $REDUCER_SCRIPT0
+
+
+# debug
+# hdfs dfs -cat ${HDFS_OUT}/*
+
+# Step 0: Delete and make input dir
+hdfs dfs -rm -r -f $HDFS_INP
+hdfs dfs -mkdir -p $HDFS_INP
+
+# Step 1: Concatenate output files and overwrite input.txt in HDFS
+hdfs dfs -cat ${HDFS_OUT}/* | hdfs dfs -put -f - ${HDFS_INP}/input.txt
+
+# Step 2: Delete the contents of the output directory
+hdfs dfs -rm -r -f $HDFS_OUT
+
+
+# run
+hadoop jar $STREAM_JAR \
+    -input $HDFS_INP \
+    -output $HDFS_OUT \
+    -numReduceTasks 3 \
+    -file $MAPPER_SCRIPT1  -mapper $MAPPER_SCRIPT1 \
+    -file $REDUCER_SCRIPT1 -reducer $REDUCER_SCRIPT1
+
+
+# hdfs dfs -cat ${HDFS_OUT}/*
+
+# combine outputs
+# hdfs dfs -mkdir -p /output
+hdfs dfs -cat ${HDFS_OUT}/* | hdfs dfs -put -f - ${HDFS_OUT}/combined.txt
+hdfs dfs -cat ${HDFS_OUT}/combined.txt | sort | hdfs dfs -put -f - ${HDFS_OUT}/combined.txt
+
+
+# cleanup
+# hdfs dfs -rm -r -f $HDFS_INP
